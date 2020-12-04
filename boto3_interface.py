@@ -16,6 +16,7 @@ from datetime import datetime
 import boto3
 import botocore
 import time
+import threading
 
 
 def does_log_group_exist(client, logGroup):
@@ -33,6 +34,7 @@ def does_log_group_exist(client, logGroup):
 # Create CloudWatchEvents client
 def log_result(message, logGroup, logStream):
     client = boto3.client('logs', region_name = "us-east-2")
+    logStream+=("_"+str(threading.get_ident()))
     success = False
 
     if not does_log_group_exist(client, logGroup):
@@ -86,5 +88,5 @@ def log_result(message, logGroup, logStream):
             response = client.create_log_stream(logGroupName = logGroup, logStreamName = logStream)
             continue
         except Exception as e:
-            logResult(e,'LoggingError', 'LoggingErrorStream')
+            logResult(e,'LoggingError', 'LoggingErrorStream'+"_"+str(threading.get_ident()))
             continue
