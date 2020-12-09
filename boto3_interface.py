@@ -99,7 +99,8 @@ def retries(func):
         attempts = 0
         while True:
             try:
-                func(*args,**kwargs)
+                result = func(*args,**kwargs)
+                return result
                 break
             except Exception as e:
                 print(e)
