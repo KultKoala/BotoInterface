@@ -90,3 +90,22 @@ def log_result(message, logGroup, logStream):
         except Exception as e:
             logResult(e,'LoggingError', 'LoggingErrorStream'+"_"+str(threading.get_ident()))
             continue
+
+def retries(func):
+    def retries(*args, **kwargs):
+        # if isinstance(args[-1],dict):
+        #     print(args[-1])
+        #     print(kwargs)
+        attempts = 0
+        while True:
+            try:
+                func(*args,**kwargs)
+                break
+            except Exception as e:
+                print(e)
+                attempts +=1
+                if attempts > 3:
+                    raise
+
+
+    return retries
