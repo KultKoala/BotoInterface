@@ -97,16 +97,17 @@ def retries(func):
         #     print(args[-1])
         #     print(kwargs)
         attempts = 0
+        result = None
         while True:
             try:
                 result = func(*args,**kwargs)
-                return result
                 break
             except Exception as e:
                 print(e)
                 attempts +=1
                 if attempts > 3:
                     raise
+        return result
 
 
     return wrapper_retries
