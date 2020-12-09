@@ -92,7 +92,7 @@ def log_result(message, logGroup, logStream):
             continue
 
 def retries(func):
-    def retries(*args, **kwargs):
+    def wrapper_retries(*args, **kwargs):
         # if isinstance(args[-1],dict):
         #     print(args[-1])
         #     print(kwargs)
@@ -108,4 +108,4 @@ def retries(func):
                     raise
 
 
-    return retries
+    return wrapper_retries
