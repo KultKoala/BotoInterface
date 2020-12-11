@@ -103,7 +103,6 @@ def retries(func):
                 result = func(*args,**kwargs)
                 break
             except Exception as e:
-                print(e)
                 attempts +=1
                 if attempts > 3:
                     raise
