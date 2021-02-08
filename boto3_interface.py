@@ -110,3 +110,55 @@ def retries(func):
 
 
     return wrapper_retries
+
+def upload_file(file_name, bucket, file_path):
+    """Upload a file to an S3 bucket
+
+    :param file_name: File to upload
+    :param bucket: Bucket to upload to
+    :param object_name: S3 object name. If not specified then file_name is used
+    :return: True if file was uploaded, else False
+    """
+
+    # If S3 object_name was not specified, use file_name
+
+    # Upload the file
+    s3_client = boto3.client('s3')
+    try:
+        response = s3_client.upload_file(file_name, bucket, file_path, ExtraArgs={'ACL': 'public-read'})
+    except ClientError as e:
+        logging.error(e)
+        return False
+    return True
+
+def upload_memory_file(file, bucket, file_path):
+    """Upload a file to an S3 bucket
+
+    :param file_name: File to upload
+    :param bucket: Bucket to upload to
+    :param object_name: S3 object name. If not specified then file_name is used
+    :return: True if file was uploaded, else False
+    """
+
+    # If S3 object_name was not specified, use file_name
+
+    # Upload the file
+    s3_client = boto3.client('s3')
+    try:
+        response = s3_client.upload_fileobj(file, bucket, file_path, ExtraArgs={ "ContentType": "image/png", 'ACL': 'public-read'})
+        print(response)
+    except ClientError as e:
+        logging.error(e)
+        return False
+    return True
+
+def download_file(file_name, bucket, object_name=None):
+    s3 = boto3.client('s3')
+    with open(file_name, 'wb') as f:
+        print(bucket)
+        print(object_name)
+        s3.download_fileobj(bucket, object_name, f)
+
+def get_bucket_files(bucket, prefix = ""):
+    s3 = boto3.client('s3')
+    return s3.list_objects(Bucket=bucket, Prefix=prefix)
