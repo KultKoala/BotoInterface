@@ -14,7 +14,7 @@
 import json
 from datetime import datetime
 import boto3
-import botocore
+from botocore.exceptions import ClientError
 import time
 import threading
 
@@ -127,14 +127,13 @@ def upload_file(file_name, bucket, file_path):
     try:
         response = s3_client.upload_file(file_name, bucket, file_path, ExtraArgs={'ACL': 'public-read'})
     except ClientError as e:
-        logging.error(e)
         return False
     return True
 
 def upload_memory_file(file, bucket, file_path):
     """Upload a file to an S3 bucket
 
-    :param file_name: File to upload
+    :param file: file in binary
     :param bucket: Bucket to upload to
     :param object_name: S3 object name. If not specified then file_name is used
     :return: True if file was uploaded, else False
@@ -145,11 +144,10 @@ def upload_memory_file(file, bucket, file_path):
     # Upload the file
     s3_client = boto3.client('s3')
     try:
-        response = s3_client.upload_fileobj(file, bucket, file_path, ExtraArgs={ "ContentType": "image/png", 'ACL': 'public-read'})
+        response = s3_client.upload_fileobj(file, bucket, file_path, ExtraArgs={ "ContentType": "application/octet-stream"})
         print(response)
     except ClientError as e:
-        logging.error(e)
-        return False
+        raise(e)
     return True
 
 def download_file(file_name, bucket, object_name=None):
