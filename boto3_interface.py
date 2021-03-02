@@ -31,14 +31,15 @@ def does_log_group_exist(client, logGroup):
     else:
         return False
 
+
 # Create CloudWatchEvents client
 def log_result(message, logGroup, logStream):
-    client = boto3.client('logs', region_name = "us-east-2")
+    client = boto3.client('logs', region_name="us-east-2")
     logStream+=("_"+str(threading.get_ident()))
     success = False
 
     if not does_log_group_exist(client, logGroup):
-        response = client.create_log_group(logGroupName = logGroup)
+        response = client.create_log_group(logGroupName=logGroup)
 
 
     while not success:
