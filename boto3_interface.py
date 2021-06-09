@@ -161,3 +161,19 @@ def download_file(file_name, bucket, object_name=None):
 def get_bucket_files(bucket, prefix = ""):
     s3 = boto3.client('s3')
     return s3.list_objects(Bucket=bucket, Prefix=prefix)
+
+
+def publish_layer_version(layername, s3key, description='programatically created layer'):
+    client = boto3.client('lambda')
+
+    response = client.publish_layer_version(
+        LayerName=layername,
+        Description=description,
+        Content={
+            'S3Bucket': 'my-lambda-repos',
+            'S3Key': s3key,
+        },
+        CompatibleRuntimes=[
+            'python3.8',
+        ],
+    )
